@@ -34,25 +34,48 @@ CREATE TABLE ESCUELA
 		REFERENCES FACULTAD(Id)
 )
 
-CREATE TABLE PROFESOR
+CREATE TABLE ROL
+(
+	Id INT IDENTITY(1, 1),
+	Nombre VARCHAR(200),
+	CONSTRAINT pk_rol
+		PRIMARY KEY (ID)
+)
+
+CREATE TABLE USUARIO
 (
 	Id INT IDENTITY(1, 1),
 	CodigoUniversitario VARCHAR(10),
+	Correo VARCHAR(320),
+	IdEscuela INT,
+	IdRol INT,
+	CONSTRAINT pk_usuario
+		PRIMARY KEY (Id),
+	CONSTRAINT uq_codigoUniversitario
+		UNIQUE (CodigoUniversitario),
+	CONSTRAINT fk_profesor_escuela
+		FOREIGN KEY (IdEscuela)
+		REFERENCES ESCUELA(Id),
+	CONSTRAINT fk_usuario_rol
+		FOREIGN KEY (IdRol)
+		REFERENCES Rol(Id)
+)
+
+CREATE TABLE PROFESOR
+(
+	Id INT IDENTITY(1, 1),
 	TipoDocumento CHAR(1),
 	NumeroDocumento VARCHAR(20),
 	Nombre VARCHAR(250),
 	ApellidoPaterno VARCHAR(250),
 	ApellidoMaterno VARCHAR(250),
-	Emeal VARCHAR(320),
 	Telefono VARCHAR(20),
-	IdEscuela INT,
+	IdUsuario INT,
 	CONSTRAINT pk_profesor
 		PRIMARY KEY (Id),
-	CONSTRAINT fk_profesor_escuela
-		FOREIGN KEY (IdEscuela)
-		REFERENCES ESCUELA(Id),
-	CONSTRAINT uq_codigoUniversitario_prof
-		UNIQUE (CodigoUniversitario)
+	CONSTRAINT fk_profesor_usuario
+		FOREIGN KEY (IdUsuario)
+		REFERENCES USUARIO(Id)
 )
 
 CREATE TABLE PROYECTO
@@ -72,22 +95,18 @@ CREATE TABLE PROYECTO
 CREATE TABLE ALUMNO
 (
 	Id INT IDENTITY(1, 1),
-	CodigoUniversitario VARCHAR(10),
 	TipoDocumento CHAR(1),
 	NumeroDocumento VARCHAR(20),
 	Nombre VARCHAR(250),
 	ApellidoPaterno VARCHAR(250),
 	ApellidoMaterno VARCHAR(250),
-	Emeal VARCHAR(320),
 	Telefono VARCHAR(20),
-	IdEscuela INT,
+	IdUsuario INT,
 	CONSTRAINT pk_alumno
 		PRIMARY KEY (Id),
-	CONSTRAINT fk_alumno_escuela
-		FOREIGN KEY (IdEscuela)
-		REFERENCES ESCUELA(Id),
-	CONSTRAINT uq_codigoUniversitario_alumn
-		UNIQUE (CodigoUniversitario)
+	CONSTRAINT fk_alumno_usuario
+		FOREIGN KEY (IdUsuario)
+		REFERENCES USUARIO(Id)
 )
 
 CREATE TABLE PROYECTOXALUMNO
@@ -134,4 +153,28 @@ CREATE TABLE COMENTARIO
 	CONSTRAINT fk_comentario_revision
 		FOREIGN KEY (IdRevision)
 		REFERENCES REVISION(Id)
+)
+
+CREATE TABLE RUTA
+(
+	Id INT IDENTITY(1, 1),
+	Menu VARCHAR(100),
+	Ruta VARCHAR(MAX),
+	CONSTRAINT pk_ruta
+		PRIMARY KEY (Id)
+)
+
+CREATE TABLE ROLXRUTA
+(
+	Id INT IDENTITY(1, 1),
+	IdRuta INT,
+	IdRol INT,
+	CONSTRAINT pk_rolxruta
+		PRIMARY KEY (Id),
+	CONSTRAINT fk_rolxruta_ruta
+		FOREIGN KEY (IdRuta)
+		REFERENCES RUTA(Id),
+	CONSTRAINT fk_rolxruta_rol
+		FOREIGN KEY (IdRol)
+		REFERENCES ROL(Id)
 )

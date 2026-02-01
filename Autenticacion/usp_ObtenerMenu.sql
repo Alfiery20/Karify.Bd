@@ -1,0 +1,23 @@
+USE Karify;
+GO
+IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'usp_ObtenerMenu') 
+	BEGIN
+		DROP PROCEDURE usp_ObtenerMenu;
+	END
+GO
+
+CREATE PROCEDURE usp_ObtenerMenu
+(
+	@pIdRol INT
+)
+AS
+BEGIN
+	
+	SELECT 
+		RUTA.Id AS [ID],
+		RUTA.Menu AS [NOMBRE],
+		RUTA.Ruta AS [RUTA]
+	FROM RUTA RUTA
+	INNER JOIN ROLXRUTA ROXRU ON ROXRU.IdRuta = RUTA.Id AND ROXRU.IdRol = @pIdRol
+
+END
