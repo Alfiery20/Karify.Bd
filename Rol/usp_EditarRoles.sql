@@ -10,6 +10,7 @@ CREATE PROCEDURE usp_EditarRoles
 (
 	@pId INT,
 	@pNombre VARCHAR(200),
+	@pPermiso XML,
 	@msj VARCHAR(200) OUTPUT
 )
 AS
@@ -19,6 +20,12 @@ BEGIN
 		BEGIN TRANSACTION
 
 			UPDATE ROL SET Nombre = @pNombre WHERE Id = @pId
+
+			INSERT INTO ROLXRUTA(IdRuta, IdRol)
+			SELECT 
+				@pId,
+				T.N.value('(IdRuta)[1]', 'INT') AS IdRuta
+			FROM @pPermiso.nodes('/Permisos/Permiso') AS T(N);
 
 			IF(@@ROWCOUNT > 0)
 				BEGIN
