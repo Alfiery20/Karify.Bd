@@ -9,6 +9,7 @@ GO
 CREATE PROCEDURE usp_AgregarRoles
 (
 	@pNombre VARCHAR(200),
+	@pPermiso XML,
 	@msj VARCHAR(200) OUTPUT
 )
 AS
@@ -17,7 +18,17 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION
 
+			DECLARE @idNuevo INT;
+
 			INSERT INTO ROL(Nombre, Estado) VALUES (@pNombre, 1);
+
+			SET @idNuevo = SCOPE_IDENTITY();
+
+			INSERT INTO ROLXRUTA(IdRuta, IdRol)
+			SELECT 
+				@idNuevo,
+				T.N.value('(IdRuta)[1]', 'INT') AS IdRuta
+			FROM @pPermiso.nodes('/Permisos/Permiso') AS T(N);
 
 			IF(@@ROWCOUNT > 0)
 				BEGIN
