@@ -21,7 +21,9 @@ BEGIN
 
 			UPDATE ROL SET Nombre = @pNombre WHERE Id = @pId
 
-			INSERT INTO ROLXRUTA(IdRuta, IdRol)
+			DELETE FROM ROLXRUTA WHERE IdRol = @pId
+
+			INSERT INTO ROLXRUTA(IdRol, IdRuta)
 			SELECT 
 				@pId,
 				T.N.value('(IdRuta)[1]', 'INT') AS IdRuta
