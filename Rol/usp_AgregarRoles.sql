@@ -10,6 +10,7 @@ CREATE PROCEDURE usp_AgregarRoles
 (
 	@pNombre VARCHAR(200),
 	@pPermiso XML,
+	@pPermiso XML,
 	@msj VARCHAR(200) OUTPUT
 )
 AS
@@ -17,6 +18,8 @@ BEGIN
 	
 	BEGIN TRY
 		BEGIN TRANSACTION
+
+			DECLARE @idNuevo INT;
 
 			DECLARE @idNuevo INT;
 
