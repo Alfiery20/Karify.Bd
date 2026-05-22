@@ -26,8 +26,8 @@ BEGIN
 
 			INSERT INTO ROLXRUTA(IdRuta, IdRol)
 			SELECT 
-				@idNuevo,
-				T.N.value('(IdRuta)[1]', 'INT') AS IdRuta
+				T.N.value('(IdRuta)[1]', 'INT') AS IdRuta,
+				@idNuevo
 			FROM @pPermiso.nodes('/Permisos/Permiso') AS T(N);
 
 			IF(@@ROWCOUNT > 0)

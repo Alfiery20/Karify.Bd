@@ -1,10 +1,11 @@
 INSERT INTO Rol(Nombre) VALUES ('Administrador'), ('Profesor'), ('Alumno')
 
 INSERT INTO RUTA(Menu, Ruta) VALUES ('Gestion Permisos', 'gestionpermisos'), ('Revisión de Proyectos', 'revisionproyectos'), 
-							('Gestion de Proyectos', 'gestionproyectos'), ('Configuración', 'configuracion')
+							('Gestion de Proyectos', 'gestionproyectos'), ('Configuración', 'configuracion'),
+							('Gestion de Profesores', 'gestionprofesores')
 
 INSERT INTO ROLXRUTA(IdRol, IdRuta) 
-	VALUES (1, 1), (1, 2), (1, 3), (1, 4),
+	VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
 			(2, 2), (2, 4), 
 			(3, 3), (3, 4)
 
