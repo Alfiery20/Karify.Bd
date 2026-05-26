@@ -1,12 +1,12 @@
 USE Karify;
 GO
-IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'usp_ObtenerEscuela') 
+IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'usp_DM_ObtenerEscuela') 
 	BEGIN
-		DROP PROCEDURE usp_ObtenerEscuela;
+		DROP PROCEDURE usp_DM_ObtenerEscuela;
 	END
 GO
 
-CREATE PROCEDURE usp_ObtenerEscuela
+CREATE PROCEDURE usp_DM_ObtenerEscuela
 (
 	@pIdFacultad INT
 )

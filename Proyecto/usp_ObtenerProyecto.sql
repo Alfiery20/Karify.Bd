@@ -25,10 +25,10 @@ BEGIN
 		PRO.FechaRegistro AS [FECHA_REGISTRO]
 	FROM PROYECTO PRO
 	INNER JOIN PROYECTOXALUMNO PROXALU ON PROXALU.IdProyecto = PRO.Id
-	LEFT JOIN PROFESOR PROF ON PRO.Id = PRO.IdProfesor
+	LEFT JOIN PROFESOR PROF ON PROF.Id = PRO.IdProfesor
 	WHERE 
 		(PRO.Nombre LIKE CONCAT('%', @pNombre, '%') 
 			OR @pNombre IS NULL OR @pNombre = '')
-		AND (PROXALU.IdAlumno = @pIdAlumno)
+		AND (PROXALU.IdAlumno = @pIdAlumno OR @pIdAlumno = 0)
 
 END

@@ -8,7 +8,7 @@ GO
 
 CREATE PROCEDURE usp_VerProfesor
 (
-	@pIdProfesor INT
+	@pid INT
 )
 AS
 BEGIN
@@ -28,10 +28,11 @@ BEGIN
 		USU.CodigoUniversitario AS [CODIGO_UNIVERSITARIO],
 		USU.Correo AS [CORREO],
 		ESC.IdFacultad AS [FACULTAD],
-		USU.IdEscuela AS [ESCUELA]
+		USU.IdEscuela AS [ESCUELA],
+		USU.IdRol AS [ROL]
 	FROM PROFESOR PRO
 	INNER JOIN USUARIO USU ON USU.Id = PRO.IdUsuario
 	LEFT JOIN ESCUELA ESC ON ESC.Id = USU.IdEscuela
-	WHERE PRO.Id = @pIdProfesor
+	WHERE PRO.Id = @pid
 
 END
