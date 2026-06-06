@@ -13,6 +13,10 @@ CREATE PROCEDURE usp_AgregarProyecto
 	@pFechaRegistro DATETIME,
 	@pIdAlumno INT,
 	@pIdProfesor INT,
+	@pNombreArchivo VARCHAR(MAX),
+	@pArchivoBase64 VARBINARY(MAX),
+	@pPeso INT,
+	@idNuevoProyecto INT OUTPUT,
 	@msj VARCHAR(200) OUTPUT
 )
 AS
@@ -30,19 +34,19 @@ BEGIN
 			INSERT INTO PROYECTOXALUMNO(IdProyecto, IdAlumno)
 				VALUES(@idProyecto, @pIdAlumno)
 
-			IF(@@ROWCOUNT > 0)
-				BEGIN
-					SET @msj = 'OK';
-				END
-			ELSE
-				BEGIN
-					SET @msj = 'EX'
-				END
+			INSERT INTO REVISION(NombreArchivo, ArchivoBase64, 
+						Peso, FechaRegistro, Estado, IdProyecto)
+				VALUES (@pNombreArchivo, @pArchivoBase64, @pPeso, 
+						@pFechaRegistro, 'P', @idProyecto)
+
+			SET @idNuevoProyecto = @idProyecto;
+			SET @msj = 'OK';
 
 		COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH
 		SET @msj = ERROR_MESSAGE();
+		SET @idNuevoProyecto = 0;
 		ROLLBACK TRANSACTION
 	END CATCH
 
