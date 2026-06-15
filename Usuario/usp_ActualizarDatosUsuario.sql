@@ -32,6 +32,15 @@ BEGIN
 				Telefono = @pTelefono
 			WHERE IdUsuario = @pIdUsuario
 
+			UPDATE PROFESOR SET 
+				TipoDocumento = @pTipoDocumento,
+				NumeroDocumento = @pNumeroDocumento,
+				Nombre = @pNombre,
+				ApellidoPaterno = @pApellidoPaterno,
+				ApellidoMaterno = @pApellidoMaterno,
+				Telefono = @pTelefono
+			WHERE IdUsuario = @pIdUsuario
+
 			UPDATE USUARIO SET
 				CodigoUniversitario = @pCodigoUniversitario,
 				IdEscuela = @pEscuela

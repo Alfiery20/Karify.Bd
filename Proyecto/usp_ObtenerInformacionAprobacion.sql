@@ -1,0 +1,37 @@
+USE Karify;
+GO
+IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'usp_ObtenerInformacionAprobacion') 
+	BEGIN
+		DROP PROCEDURE usp_ObtenerInformacionAprobacion;
+	END
+GO
+
+CREATE PROCEDURE usp_ObtenerInformacionAprobacion
+(
+	@pIdProyecto INT
+)
+AS
+BEGIN
+	
+	SELECT
+		ALU.NumeroDocumento AS [NUMERO_DOCUMENTO],
+		USU.CodigoUniversitario AS [CODIGO_UNIVERSITARIO],
+		USU.Correo AS [CORREO_ALUMNO],
+		ALU.Nombre AS [NOMBRE],
+		ALU.ApellidoPaterno AS [APELLIDO_PATERNO],
+		ALU.ApellidoMaterno AS [APELLIDO_MATERNO],
+		PROF.Nombre AS [NOMBRE_PROFESOR],
+		PROF.ApellidoPaterno AS [APELLIDO_PATERNO_PROFESOR],
+		PROF.ApellidoMaterno AS [APELLIDO_MATERNO_PROFESOR],
+		PRO.Nombre AS [NOMBRE_PROYECTO],
+		PRO.Descripcion AS [DESCRIPCION_PROYECTO],
+		REV.FechaResultado AS [FECHA_RESULTADO]
+	FROM PROYECTO PRO
+	INNER JOIN PROYECTOXALUMNO PROXALU ON PROXALU.IdProyecto = PRO.Id
+	INNER JOIN ALUMNO ALU ON ALU.Id = PROXALU.IdAlumno
+	INNER JOIN USUARIO USU ON USU.Id = ALU.IdUsuario
+	INNER JOIN PROFESOR PROF ON PROF.Id = PRO.IdProfesor
+	INNER JOIN REVISION REV ON REV.IdProyecto = PRO.Id
+	WHERE PRO.Id = @pIdProyecto
+
+END

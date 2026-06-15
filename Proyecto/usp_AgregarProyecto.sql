@@ -14,7 +14,7 @@ CREATE PROCEDURE usp_AgregarProyecto
 	@pIdAlumno INT,
 	@pIdProfesor INT,
 	@pNombreArchivo VARCHAR(MAX),
-	@pArchivoBase64 VARBINARY(MAX),
+	@pArchivoBase64 VARCHAR(MAX),
 	@pPeso INT,
 	@idNuevoProyecto INT OUTPUT,
 	@msj VARCHAR(200) OUTPUT
