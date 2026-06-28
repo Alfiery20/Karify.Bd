@@ -1,0 +1,27 @@
+USE Karify;
+GO
+IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'usp_ObtenerProyectoPorRevision') 
+	BEGIN
+		DROP PROCEDURE usp_ObtenerProyectoPorRevision;
+	END
+GO
+
+CREATE PROCEDURE usp_ObtenerProyectoPorRevision
+AS
+BEGIN
+	
+	SELECT
+		PRO.Id AS [ID],
+		PRO.Nombre AS [NOMBRE],
+		PRO.Descripcion AS [DESCRIPCION],
+		USU.IdEscuela AS [ID_ESCUELA],
+		REV.Estado AS [ESTADO],
+		PRO.FechaRegistro AS [FECHA_REGISTRO]
+	FROM PROYECTO PRO
+	INNER JOIN REVISION REV ON REV.IdProyecto = PRO.Id
+	INNER JOIN PROYECTOXALUMNO PROXALU ON PROXALU.IdProyecto = PRO.Id
+	INNER JOIN ALUMNO ALU ON ALU.Id = PROXALU.IdAlumno
+	INNER JOIN USUARIO USU ON USU.Id = ALU.IdUsuario
+	WHERE REV.Estado = 'A'
+
+END

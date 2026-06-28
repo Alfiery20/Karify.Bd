@@ -10,7 +10,6 @@ CREATE PROCEDURE usp_AgregarRoles
 (
 	@pNombre VARCHAR(200),
 	@pPermiso XML,
-	@pPermiso XML,
 	@msj VARCHAR(200) OUTPUT
 )
 AS
@@ -18,9 +17,6 @@ BEGIN
 	
 	BEGIN TRY
 		BEGIN TRANSACTION
-
-			DECLARE @idNuevo INT;
-
 			DECLARE @idNuevo INT;
 
 			INSERT INTO ROL(Nombre, Estado) VALUES (@pNombre, 1);
@@ -33,7 +29,7 @@ BEGIN
 				@idNuevo
 			FROM @pPermiso.nodes('/Permisos/Permiso') AS T(N);
 
-			IF(@@ROWCOUNT > 0)
+			IF(@idNuevo > 0)
 				BEGIN
 					SET @msj = 'OK';
 				END
