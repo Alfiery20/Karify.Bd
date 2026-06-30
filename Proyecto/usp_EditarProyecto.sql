@@ -11,6 +11,8 @@ CREATE PROCEDURE usp_EditarProyecto
 	@pIdProyecto INT,
 	@pNombre VARCHAR(200),
 	@pDescripcion VARCHAR(MAX),
+	@pIdAlumno INT,
+	@pIdCotesista INT,
 	@pIdProfesor INT,
 	@msj VARCHAR(200) OUTPUT
 )
@@ -19,22 +21,47 @@ BEGIN
 	
 	BEGIN TRY
 		BEGIN TRANSACTION
+
+		IF(@pIdCotesista = @pIdAlumno)
+			BEGIN
+				SET @msj = 'E1';
+			END
+		ELSE
+			BEGIN
 			
-			UPDATE PROYECTO SET 
-				Nombre = @pNombre,
-				Descripcion = @pDescripcion,
-				IdProfesor = @pIdProfesor
-			WHERE Id = @pIdProyecto
+				UPDATE PROYECTO SET 
+					Nombre = @pNombre,
+					Descripcion = @pDescripcion,
+					IdProfesor = @pIdProfesor
+				WHERE Id = @pIdProyecto
 
-			IF(@@ROWCOUNT > 0)
+				DELETE FROM PROYECTOXALUMNO 
+					WHERE IdProyecto = @pIdProyecto
+
+				INSERT INTO PROYECTOXALUMNO(IdProyecto, IdAlumno, IsPrincipal)
+					VALUES(@pIdProyecto, @pIdAlumno, 1)
+
+				IF(@pIdCotesista IS NOT NULL AND @pIdCotesista > 0)
 				BEGIN
-					SET @msj = 'OK';
+					INSERT INTO PROYECTOXALUMNO(IdProyecto, IdAlumno, IsPrincipal)
+						VALUES(@pIdProyecto, @pIdCotesista, 0)
+
+					UPDATE REVISION SET Estado = 'T' WHERE IdProyecto = @pIdProyecto
 				END
-			ELSE
+				ELSE
 				BEGIN
-					SET @msj = 'EX'
+					UPDATE REVISION SET Estado = 'P' WHERE IdProyecto = @pIdProyecto
 				END
 
+				IF(@@ROWCOUNT > 0)
+					BEGIN
+						SET @msj = 'OK';
+					END
+				ELSE
+					BEGIN
+						SET @msj = 'EX'
+					END
+			END
 		COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH

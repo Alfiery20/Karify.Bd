@@ -12,6 +12,7 @@ CREATE PROCEDURE usp_AgregarProyecto
 	@pDescripcion VARCHAR(MAX),
 	@pFechaRegistro DATETIME,
 	@pIdAlumno INT,
+	@pIdCotesista INT,
 	@pIdProfesor INT,
 	@pNombreArchivo VARCHAR(MAX),
 	@pArchivoBase64 VARCHAR(MAX),
@@ -24,24 +25,38 @@ BEGIN
 	
 	BEGIN TRY
 		BEGIN TRANSACTION
-			DECLARE @idProyecto INT
-			
-			INSERT INTO PROYECTO(Nombre, Descripcion, FechaRegistro, IdProfesor)
-				VALUES(@pNombre, @pDescripcion, @pFechaRegistro, @pIdProfesor)
+			DECLARE @idProyecto INT, @nuevoEstado CHAR(1) = 'P'
 
-			SET @idProyecto = SCOPE_IDENTITY();
+			IF(@pIdCotesista = @pIdAlumno)
+			BEGIN
+				SET @msj = 'E1';
+				SET @idNuevoProyecto = 0;
+			END
+			ELSE
+			BEGIN
+				INSERT INTO PROYECTO(Nombre, Descripcion, FechaRegistro, IdProfesor)
+					VALUES(@pNombre, @pDescripcion, @pFechaRegistro, @pIdProfesor)
 
-			INSERT INTO PROYECTOXALUMNO(IdProyecto, IdAlumno)
-				VALUES(@idProyecto, @pIdAlumno)
+				SET @idProyecto = SCOPE_IDENTITY();
 
-			INSERT INTO REVISION(NombreArchivo, ArchivoBase64, 
-						Peso, FechaRegistro, Estado, IdProyecto)
-				VALUES (@pNombreArchivo, @pArchivoBase64, @pPeso, 
-						@pFechaRegistro, 'P', @idProyecto)
+				INSERT INTO PROYECTOXALUMNO(IdProyecto, IdAlumno, IsPrincipal)
+					VALUES(@idProyecto, @pIdAlumno, 1)
 
-			SET @idNuevoProyecto = @idProyecto;
-			SET @msj = 'OK';
+				IF(@pIdCotesista IS NOT NULL AND @pIdCotesista > 0)
+				BEGIN
+					INSERT INTO PROYECTOXALUMNO(IdProyecto, IdAlumno, IsPrincipal)
+						VALUES(@idProyecto, @pIdCotesista, 0)
+					SET @nuevoEstado = 'T'
+				END
 
+				INSERT INTO REVISION(NombreArchivo, ArchivoBase64, 
+							Peso, FechaRegistro, Estado, IdProyecto)
+					VALUES (@pNombreArchivo, @pArchivoBase64, @pPeso, 
+							@pFechaRegistro, @nuevoEstado, @idProyecto)
+
+				SET @idNuevoProyecto = @idProyecto;
+				SET @msj = 'OK';
+			END
 		COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH
