@@ -23,14 +23,18 @@ BEGIN
 			PROF.Nombre, ' ', 
 			PROF.ApellidoPaterno, ' ',
 			PROF.ApellidoMaterno) AS [PROFESOR],
-		PRO.FechaRegistro AS [FECHA_REGISTRO]
+		PRO.FechaRegistro AS [FECHA_REGISTRO],
+		(CASE
+			WHEN PROXALU.IsPrincipal = 0
+			THEN 1 ELSE 0 END) AS [ES_COTESISTA]
 	FROM PROYECTO PRO
 	INNER JOIN PROYECTOXALUMNO PROXALU ON PROXALU.IdProyecto = PRO.Id
 	INNER JOIN REVISION REV ON REV.IdProyecto = PRO.Id
+	INNER JOIN ALUMNO ALU ON ALU.Id = PROXALU.IdAlumno
 	LEFT JOIN PROFESOR PROF ON PROF.Id = PRO.IdProfesor
 	WHERE 
 		(PRO.Nombre LIKE CONCAT('%', @pNombre, '%') 
 			OR @pNombre IS NULL OR @pNombre = '')
-		AND (PROXALU.IdAlumno = @pIdAlumno OR @pIdAlumno = 0)
+		AND (ALU.IdUsuario = @pIdAlumno OR @pIdAlumno = 0)
 
 END

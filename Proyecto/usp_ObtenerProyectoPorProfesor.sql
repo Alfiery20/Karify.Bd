@@ -29,6 +29,6 @@ BEGIN
 	LEFT JOIN ALUMNO ALU ON ALU.Id = PROXALU.IdAlumno
 	INNER JOIN PROFESOR PROF ON PROF.Id = PRO.IdProfesor
 	WHERE 
-		PROF.IdUsuario = @pIdUsuario
+		PROF.IdUsuario = @pIdUsuario AND PROXALU.IsPrincipal = 1
 
 END
